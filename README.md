@@ -1,0 +1,2 @@
+# demo-jhipster
+Demo jhipster
