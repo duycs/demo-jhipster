@@ -26,6 +26,12 @@ spring:
       - swagger
       # Uncomment to activate TLS for the dev profile
       #- tls
+  datasource:
+    type: com.duycs.demo
+    url: jdbc:mysql://localhost:3306/demo_jhipster
+    username: root
+    password: abc@1234
+
   devtools:
     restart:
       enabled: true
