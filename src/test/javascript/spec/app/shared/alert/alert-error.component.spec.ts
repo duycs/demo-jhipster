@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { TranslateModule } from '@ngx-translate/core';
 
-import { DemoJhipsterTestModule } from '../../../test.module';
+import { JhipsterSampleApplicationTestModule } from '../../../test.module';
 import { AlertErrorComponent } from 'app/shared/alert/alert-error.component';
 import { MockAlertService } from '../../../helpers/mock-alert.service';
 
@@ -14,15 +15,15 @@ describe('Component Tests', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [DemoJhipsterTestModule],
+        imports: [JhipsterSampleApplicationTestModule, TranslateModule.forRoot()],
         declarations: [AlertErrorComponent],
         providers: [
           JhiEventManager,
           {
             provide: JhiAlertService,
-            useClass: MockAlertService
-          }
-        ]
+            useClass: MockAlertService,
+          },
+        ],
       })
         .overrideTemplate(AlertErrorComponent, '')
         .compileComponents();
@@ -37,24 +38,24 @@ describe('Component Tests', () => {
     describe('Error Handling', () => {
       it('Should display an alert on status 0', () => {
         // GIVEN
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: { status: 0 } });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: { status: 0 } });
         // THEN
         expect(comp.alerts.length).toBe(1);
-        expect(comp.alerts[0].msg).toBe('Server not reachable');
+        expect(comp.alerts[0].msg).toBe('error.server.not.reachable');
       });
 
       it('Should display an alert on status 404', () => {
         // GIVEN
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: { status: 404 } });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: { status: 404 } });
         // THEN
         expect(comp.alerts.length).toBe(1);
-        expect(comp.alerts[0].msg).toBe('Not found');
+        expect(comp.alerts[0].msg).toBe('error.url.not.found');
       });
 
       it('Should display an alert on generic error', () => {
         // GIVEN
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: { error: { message: 'Error Message' } } });
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: { error: 'Second Error Message' } });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: { error: { message: 'Error Message' } } });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: { error: 'Second Error Message' } });
         // THEN
         expect(comp.alerts.length).toBe(2);
         expect(comp.alerts[0].msg).toBe('Error Message');
@@ -73,10 +74,10 @@ describe('Component Tests', () => {
             title: 'Bad Request',
             status: 400,
             path: '/api/foos',
-            message: 'error.validation'
-          }
+            message: 'error.validation',
+          },
         });
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: response });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: response });
         // THEN
         expect(comp.alerts.length).toBe(1);
         expect(comp.alerts[0].msg).toBe('error.validation');
@@ -88,9 +89,9 @@ describe('Component Tests', () => {
           url: 'http://localhost:8080/api/foos',
           headers: new HttpHeaders(),
           status: 400,
-          error: 'Bad Request'
+          error: 'Bad Request',
         });
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: response });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: response });
         // THEN
         expect(comp.alerts.length).toBe(1);
         expect(comp.alerts[0].msg).toBe('Bad Request');
@@ -109,13 +110,13 @@ describe('Component Tests', () => {
             status: 400,
             path: '/api/foos',
             message: 'error.validation',
-            fieldErrors: [{ objectName: 'foo', field: 'minField', message: 'Min' }]
-          }
+            fieldErrors: [{ objectName: 'foo', field: 'minField', message: 'Min' }],
+          },
         });
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: response });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: response });
         // THEN
         expect(comp.alerts.length).toBe(1);
-        expect(comp.alerts[0].msg).toBe('Error on field "MinField"');
+        expect(comp.alerts[0].msg).toBe('error.Size');
       });
 
       it('Should display an alert on status 400 for error headers', () => {
@@ -127,10 +128,10 @@ describe('Component Tests', () => {
           statusText: 'Bad Request',
           error: {
             status: 400,
-            message: 'error.validation'
-          }
+            message: 'error.validation',
+          },
         });
-        eventManager.broadcast({ name: 'demoJhipsterApp.httpError', content: response });
+        eventManager.broadcast({ name: 'jhipsterSampleApplicationApp.httpError', content: response });
         // THEN
         expect(comp.alerts.length).toBe(1);
         expect(comp.alerts[0].msg).toBe('Error Message');

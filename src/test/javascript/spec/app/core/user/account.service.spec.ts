@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { JhiDateUtils } from 'ng-jhipster';
+import { JhiDateUtils, JhiLanguageService } from 'ng-jhipster';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 
 import { SERVER_API_URL } from 'app/app.constants';
@@ -9,6 +9,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
 import { Authority } from 'app/shared/constants/authority.constants';
 import { StateStorageService } from 'app/core/auth/state-storage.service';
+import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { MockRouter } from '../../../helpers/mock-route.service';
 import { MockStateStorageService } from '../../../helpers/mock-state-storage.service';
 
@@ -21,7 +22,7 @@ function accountWithAuthorities(authorities: string[]): Account {
     langKey: '',
     lastName: '',
     login: '',
-    imageUrl: ''
+    imageUrl: '',
   };
 }
 
@@ -38,14 +39,18 @@ describe('Service Tests', () => {
         providers: [
           JhiDateUtils,
           {
+            provide: JhiLanguageService,
+            useClass: MockLanguageService,
+          },
+          {
             provide: StateStorageService,
-            useClass: MockStateStorageService
+            useClass: MockStateStorageService,
           },
           {
             provide: Router,
-            useClass: MockRouter
-          }
-        ]
+            useClass: MockRouter,
+          },
+        ],
       });
 
       service = TestBed.get(AccountService);

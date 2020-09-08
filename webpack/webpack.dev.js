@@ -51,7 +51,6 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
         rules: [{
             test: /\.(j|t)s$/,
             enforce: 'pre',
-            loader: 'eslint-loader',
             exclude: /node_modules/
         },
         {

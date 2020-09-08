@@ -5,7 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoginService } from 'app/core/login/login.service';
 import { LoginModalComponent } from 'app/shared/login/login.component';
-import { DemoJhipsterTestModule } from '../../../test.module';
+import { JhipsterSampleApplicationTestModule } from '../../../test.module';
 import { MockLoginService } from '../../../helpers/mock-login.service';
 import { MockRouter } from '../../../helpers/mock-route.service';
 import { MockActiveModal } from '../../../helpers/mock-active-modal.service';
@@ -20,15 +20,15 @@ describe('Component Tests', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [DemoJhipsterTestModule],
+        imports: [JhipsterSampleApplicationTestModule],
         declarations: [LoginModalComponent],
         providers: [
           FormBuilder,
           {
             provide: LoginService,
-            useClass: MockLoginService
-          }
-        ]
+            useClass: MockLoginService,
+          },
+        ],
       })
         .overrideTemplate(LoginModalComponent, '')
         .compileComponents();
@@ -49,13 +49,13 @@ describe('Component Tests', () => {
         const credentials = {
           username: 'admin',
           password: 'admin',
-          rememberMe: true
+          rememberMe: true,
         };
 
         comp.loginForm.patchValue({
           username: 'admin',
           password: 'admin',
-          rememberMe: true
+          rememberMe: true,
         });
         mockLoginService.setResponse({});
         mockRouter.url = '/admin/metrics';
@@ -75,13 +75,13 @@ describe('Component Tests', () => {
       // GIVEN
       comp.loginForm.patchValue({
         username: 'admin',
-        password: 'admin'
+        password: 'admin',
       });
 
       const expected = {
         username: '',
         password: '',
-        rememberMe: false
+        rememberMe: false,
       };
 
       // WHEN

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { of } from 'rxjs';
 
-import { DemoJhipsterTestModule } from '../../../test.module';
+import { JhipsterSampleApplicationTestModule } from '../../../test.module';
 import { ConfigurationComponent } from 'app/admin/configuration/configuration.component';
 import { ConfigurationService, Bean, PropertySource } from 'app/admin/configuration/configuration.service';
 
@@ -13,9 +13,9 @@ describe('Component Tests', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [DemoJhipsterTestModule],
+        imports: [JhipsterSampleApplicationTestModule],
         declarations: [ConfigurationComponent],
-        providers: [ConfigurationService]
+        providers: [ConfigurationService],
       })
         .overrideTemplate(ConfigurationComponent, '')
         .compileComponents();
@@ -35,20 +35,20 @@ describe('Component Tests', () => {
             prefix: 'jhipster',
             properties: {
               clientApp: {
-                name: 'jhipsterApp'
-              }
-            }
-          }
+                name: 'jhipsterApp',
+              },
+            },
+          },
         ];
         const propertySources: PropertySource[] = [
           {
             name: 'server.ports',
             properties: {
               'local.server.port': {
-                value: '8080'
-              }
-            }
-          }
+                value: '8080',
+              },
+            },
+          },
         ];
         spyOn(service, 'getBeans').and.returnValue(of(beans));
         spyOn(service, 'getPropertySources').and.returnValue(of(propertySources));

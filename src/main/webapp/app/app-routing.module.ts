@@ -16,16 +16,24 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
         {
           path: 'admin',
           data: {
-            authorities: [Authority.ADMIN]
+            authorities: [Authority.ADMIN],
           },
           canActivate: [UserRouteAccessService],
-          loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule)
+          loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule),
         },
-        ...LAYOUT_ROUTES
+        {
+          path: 'account',
+          loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
+        },
+        {
+          path: 'bpmn',
+          loadChildren: () => import('./bpmn/bpmn.module').then(m => m.BpmnModule),
+        },
+        ...LAYOUT_ROUTES,
       ],
       { enableTracing: DEBUG_INFO_ENABLED }
-    )
+    ),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DemoJhipsterAppRoutingModule {}
+export class JhipsterSampleApplicationAppRoutingModule {}

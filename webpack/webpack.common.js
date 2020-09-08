@@ -1,8 +1,8 @@
 const webpack = require('webpack');
-const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
+const MergeJsonWebpackPlugin = require("merge-jsons-webpack-plugin");
 
 const utils = require('./utils.js');
 
@@ -26,13 +26,14 @@ module.exports = (options) => ({
                 test: /\.html$/,
                 loader: 'html-loader',
                 options: {
-                    minimize: true,
-                    caseSensitive: true,
-                    removeAttributeQuotes:false,
-                    minifyJS:false,
-                    minifyCSS:false
+                    minimize: {
+                        caseSensitive: true,
+                        removeAttributeQuotes:false,
+                        minifyJS:false,
+                        minifyCSS:false
+                    }
                 },
-                exclude: /(src\/main\/webapp\/index.html)/
+                exclude: utils.root('src/main/webapp/index.html')
             },
             {
                 test: /\.(jpe?g|png|gif|svg|woff2?|ttf|eot)$/i,
@@ -72,20 +73,34 @@ module.exports = (options) => ({
                 SERVER_API_URL: `''`
             }
         }),
-        new CopyWebpackPlugin([
-            { from: './src/main/webapp/content/', to: 'content' },
-            { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
-            { from: './src/main/webapp/manifest.webapp', to: 'manifest.webapp' },
-            // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
-            { from: './src/main/webapp/robots.txt', to: 'robots.txt' }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: './node_modules/swagger-ui-dist/*.{js,css,html,png}', to: 'swagger-ui', flatten: true, globOptions: { ignore: ['**/index.html'] }},
+                { from: './node_modules/axios/dist/axios.min.js', to: 'swagger-ui' },
+                { from: './src/main/webapp/swagger-ui/', to: 'swagger-ui' },
+                { from: './src/main/webapp/content/', to: 'content' },
+                { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
+                { from: './src/main/webapp/manifest.webapp', to: 'manifest.webapp' },
+                // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
+                { from: './src/main/webapp/robots.txt', to: 'robots.txt' },
+                { from: './src/main/webapp/content/bpmn/default.bpmn', to: 'default.bpmn' }
+            ],
+        }),
+        new MergeJsonWebpackPlugin({
+            output: {
+                groupBy: [
+                    { pattern: "./src/main/webapp/i18n/en/*.json", fileName: "./i18n/en.json" }
+                    // jhipster-needle-i18n-language-webpack - JHipster will add/remove languages in this array
+                ]
+            }
+        }),
         new HtmlWebpackPlugin({
             template: './src/main/webapp/index.html',
             chunks: ['polyfills', 'main', 'global'],
             chunksSortMode: 'manual',
-            inject: 'body'
+            inject: 'body',
+            base: '/',
         }),
-        new BaseHrefWebpackPlugin({ baseHref: '/' }),
         new AngularCompilerPlugin({
             mainPath: utils.root('src/main/webapp/app/app.main.ts'),
             tsConfigPath: utils.root('tsconfig.app.json'),

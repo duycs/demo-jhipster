@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "demo-jhipster": {
+    "jhipster-sample-application": {
       "root": "",
       "sourceRoot": "src/main/webapp",
       "projectType": "application",
@@ -29,9 +29,8 @@
       "architect": {}
     }
   },
-  "defaultProject": "demo-jhipster",
+  "defaultProject": "jhipster-sample-application",
   "cli": {
-    "packageManager": "npm",
-    "analytics": false
+    "packageManager": "npm"
   }
 }

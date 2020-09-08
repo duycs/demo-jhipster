@@ -193,3 +193,30 @@ ui bootstrap tweaks
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* bpmn customize */
+
+html,
+body,
+.modeler > div,
+.ng-bpmn {
+  height: 90vh;
+}
+
+.djs-container {
+  height: 90vh !important;
+  min-height: 90vh;
+  overflow: auto;
+}
+
+.modeler svg {
+  margin-left: 10vh;
+  height: 90vh;
+  overflow: auto;
+}
+
+.djs-context-pad.open {
+  left: 80px !important;
+}
+
+/* bpmn customize */

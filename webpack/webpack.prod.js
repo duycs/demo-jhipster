@@ -6,7 +6,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
-const path = require('path');
 
 const utils = require('./utils.js');
 const commonConfig = require('./webpack.common.js');
@@ -125,8 +124,9 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
         }),
         new MomentLocalesPlugin({
             localesToKeep: [
-                // jhipster-needle-i18n-language-moment-webpack - JHipster will add/remove languages in this array
-            ]
+                    'en'
+                    // jhipster-needle-i18n-language-moment-webpack - JHipster will add/remove languages in this array
+                ]
         }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',

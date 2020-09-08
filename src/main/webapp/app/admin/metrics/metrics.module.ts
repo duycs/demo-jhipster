@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DemoJhipsterSharedModule } from 'app/shared/shared.module';
+import { JhipsterSampleApplicationSharedModule } from 'app/shared/shared.module';
 
 import { MetricsComponent } from './metrics.component';
 
 import { metricsRoute } from './metrics.route';
 
 @NgModule({
-  imports: [DemoJhipsterSharedModule, RouterModule.forChild([metricsRoute])],
-  declarations: [MetricsComponent]
+  imports: [JhipsterSampleApplicationSharedModule, RouterModule.forChild([metricsRoute])],
+  declarations: [MetricsComponent],
 })
 export class MetricsModule {}
