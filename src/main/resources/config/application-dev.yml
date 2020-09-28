@@ -65,6 +65,31 @@ spring:
 server:
   port: 8080
 
+ldap-servers-list:
+  configurations:
+    - name: 'ldap.forumsys.com'
+      enable: true
+      #if support ssl use ldaps://domain
+      url: 'ldap://ldap.forumsys.com'
+      port: 389
+      timeout: 60000
+      baseDn:
+        - 'dc=example,dc=com'
+      userDn:
+        - 'uid'
+        - 'CN'
+      prefixMailIsUserDn: true
+      authenticationType: 'Simple'
+      emailUserMapping: 'mail'
+      firstNameUserMapping: 'givenName'
+      lastNameUserMapping: 'description'
+      passwordUserDefault: 'secret@AKB10'
+      # setting master account for quick searching, if don't have will be search by sequence
+      masterUserDn: 'CN'
+      masterUserDnValue: 'read-only-admin'
+      masterUserPassword: 'password'
+      masterBaseDn: 'dc=example,dc=com'
+
 # ===================================================================
 # JHipster specific properties
 #

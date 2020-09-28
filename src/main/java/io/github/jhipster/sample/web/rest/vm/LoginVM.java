@@ -18,6 +18,9 @@ public class LoginVM {
 
     private Boolean rememberMe;
 
+    private Boolean isAuthenticationServerLogin;
+    private String serverUrl;
+
     public String getUsername() {
         return username;
     }
@@ -40,6 +43,26 @@ public class LoginVM {
 
     public void setRememberMe(Boolean rememberMe) {
         this.rememberMe = rememberMe;
+    }
+
+    public Boolean getRememberMe() {
+        return rememberMe;
+    }
+
+    public Boolean getIsAuthenticationServerLogin() {
+        return isAuthenticationServerLogin;
+    }
+
+    public void setIsAuthenticationServerLogin(Boolean authenticationServerLogin) {
+        isAuthenticationServerLogin = authenticationServerLogin;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
     // prettier-ignore
