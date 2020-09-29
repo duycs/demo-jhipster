@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +34,12 @@ public class UserJWTController {
 
     private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
     private final TokenProvider tokenProvider;
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final AuthenticationService authenticationService;
-
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager, UserService userService, AuthenticationService authenticationService, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public UserJWTController(TokenProvider tokenProvider, UserService userService, AuthenticationService authenticationService, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;
-        this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.authenticationService = authenticationService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
