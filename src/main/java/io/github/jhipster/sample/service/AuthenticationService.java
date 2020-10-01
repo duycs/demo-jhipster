@@ -5,13 +5,14 @@ import io.github.jhipster.sample.service.dto.AuthenticationServerDTO;
 import io.github.jhipster.sample.service.dto.LdapServers;
 import io.github.jhipster.sample.service.dto.UserDTO;
 import io.github.jhipster.sample.web.rest.UserJWTController;
-import jdk.internal.joptsimple.internal.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthenticationService {
 
     private final Logger log = LoggerFactory.getLogger(AuthenticationService.class);

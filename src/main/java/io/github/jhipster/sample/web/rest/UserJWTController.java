@@ -50,24 +50,24 @@ public class UserJWTController {
         String username = loginVM.getUsername();
         String password = loginVM.getPassword();
 
-//        loginVM.setIsAuthenticationServerLogin(true);
-//        loginVM.setServerUrl("ldap.forumsys.com");
-//
-//        boolean isCheckedLdapLogin = loginVM.getIsAuthenticationServerLogin() != null
-//            && loginVM.getIsAuthenticationServerLogin() == true ? true : false;
-//
-//        // Ldap login
-//        if (isCheckedLdapLogin) {
-//            User userAuthorized = authenticationService.getUserAuthorized(loginVM.getServerUrl(), username, password);
-//            if (userAuthorized == null) {
-//                log.error("User unauthorized");
-//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//            }
-//
-//            username = userAuthorized.getLogin();
-//            //password = ldapServer.getPasswordUserDefault();
-//            password = "abc@123";
-//        }
+       loginVM.setIsAuthenticationServerLogin(true);
+       loginVM.setServerUrl("ldap.forumsys.com");
+
+       boolean isCheckedLdapLogin = loginVM.getIsAuthenticationServerLogin() != null
+           && loginVM.getIsAuthenticationServerLogin() == true ? true : false;
+
+       // Ldap login
+       if (isCheckedLdapLogin) {
+           User userAuthorized = authenticationService.getUserAuthorized(loginVM.getServerUrl(), username, password);
+           if (userAuthorized == null) {
+               log.error("User unauthorized");
+               return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+           }
+
+           username = userAuthorized.getLogin();
+           //password = ldapServer.getPasswordUserDefault();
+           password = "abc@123";
+       }
 
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(username, password);
