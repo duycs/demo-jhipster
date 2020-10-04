@@ -79,10 +79,15 @@ public class LdapProvider {
 
     public LdapServers.Server getServerByUrl(String url) {
         List<LdapServers.Server> servers = ldapServers.getConfigurations();
-        if (servers == null)
+        if (servers == null || servers.size() == 0)
             return null;
 
-        LdapServers.Server server = servers.stream().filter(x -> x.getUrl().equals(url)).collect(Collectors.toList()).get(0);
+        List<LdapServers.Server> serverExisting = servers.stream().filter(x -> x.getUrl().equals(url)).collect(Collectors.toList());
+
+        if(serverExisting == null || serverExisting.size() == 0)
+            return null;
+
+        LdapServers.Server server = serverExisting.get(0);
         return server;
     }
 
@@ -166,7 +171,7 @@ public class LdapProvider {
         masterEnv.put(Context.SECURITY_PRINCIPAL, masterPrinciple);
         // Set the referral property to "follow" referrals automatically
 //        masterEnv.put(Context.REFERRAL, LDAP_CTX_FLOW);
-        masterEnv.put(Context.REFERRAL, LDAP_CTX_IGNORE);
+//        masterEnv.put(Context.REFERRAL, LDAP_CTX_IGNORE);
 
         try {
             DirContext ctx = new InitialDirContext(masterEnv);

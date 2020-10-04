@@ -3,12 +3,15 @@ package io.github.jhipster.sample.service;
 import io.github.jhipster.sample.config.Constants;
 import io.github.jhipster.sample.domain.Authority;
 import io.github.jhipster.sample.domain.User;
+import io.github.jhipster.sample.domain.User_;
 import io.github.jhipster.sample.repository.AuthorityRepository;
 import io.github.jhipster.sample.repository.UserRepository;
 import io.github.jhipster.sample.security.AuthoritiesConstants;
 import io.github.jhipster.sample.security.SecurityUtils;
+import io.github.jhipster.sample.service.dto.AuthenticationServerDTO;
 import io.github.jhipster.sample.service.dto.UserDTO;
 
+import io.github.jhipster.sample.service.mapper.UserMapper;
 import io.github.jhipster.security.RandomUtil;
 
 import org.slf4j.Logger;
@@ -43,11 +46,14 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final UserMapper userMapper;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.userMapper = userMapper;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -112,8 +118,8 @@ public class UserService {
         }
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
-        // new user is not active
-        newUser.setActivated(false);
+        // new user is active
+        newUser.setActivated(true);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
@@ -167,6 +173,48 @@ public class UserService {
         log.debug("Created Information for User: {}", user);
         return user;
     }
+
+    public User createNewAuthenticatedUser(AuthenticationServerDTO authenticationServer, Hashtable<String, String> userAttributes, String passwordUserDefault) {
+        User user = new User();
+        String login = userAttributes.get(User_.login.getName());
+        Optional<User> userLoginExisting = userRepository.findOneByLogin(login);
+        // login is unix so is same login then create new login_id for the new user
+        boolean isSameLogin = false;
+        if(userLoginExisting.isPresent())
+            isSameLogin = login.toUpperCase().equals(userLoginExisting.get().getLogin().toUpperCase());
+        if (isSameLogin) {
+            String tickAsId = new Date().getTime() + "";
+            user.setLogin(tickAsId);
+        } else {
+            user.setLogin(login);
+        }
+        // Don't store origin password, set password default
+        user.setPassword(passwordUserDefault);
+        if (userAttributes.get(User_.email.getName()) != null) {
+            user.setEmail(userAttributes.get(User_.email.getName()));
+        }
+        if (userAttributes.get(User_.firstName.getName()) != null) {
+            user.setFirstName(userAttributes.get(User_.firstName.getName()));
+        }
+        if (userAttributes.get(User_.lastName.getName()) != null) {
+            user.setLastName(userAttributes.get(User_.lastName.getName()));
+        }
+
+        // Set server authenticated information
+//        user.setAuthenticationServer(authenticationServer.toString());
+        // register user have default role is ROLE_USER
+        UserDTO userDTO = userMapper.userToUserDTO(user);
+        User userCreated = registerUser(userDTO, passwordUserDefault);
+        if (!isSameLogin) {
+            return userCreated;
+        }
+        // Update new login identity
+        String newLogin = String.format("%s_%s", login, userCreated.getId());
+        userCreated.setLogin(newLogin);
+        UserDTO userUpdated = updateUser(userMapper.userToUserDTO(userCreated)).get();
+        return userMapper.userDTOToUser(userUpdated);
+    }
+
 
     /**
      * Update all information for a specific user, and return the modified user.
@@ -298,6 +346,10 @@ public class UserService {
         return userRepository.findOneByLogin(login);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> findOneByEmail(String mail) {
+        return userRepository.findOneByEmailIgnoreCase(mail);
+    }
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());

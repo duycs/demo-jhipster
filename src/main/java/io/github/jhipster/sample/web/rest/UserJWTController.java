@@ -34,13 +34,11 @@ public class UserJWTController {
 
     private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
     private final TokenProvider tokenProvider;
-    private final UserService userService;
     private final AuthenticationService authenticationService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public UserJWTController(TokenProvider tokenProvider, UserService userService, AuthenticationService authenticationService, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationService authenticationService, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;
-        this.userService = userService;
         this.authenticationService = authenticationService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
@@ -51,7 +49,7 @@ public class UserJWTController {
         String password = loginVM.getPassword();
 
        loginVM.setIsAuthenticationServerLogin(true);
-       loginVM.setServerUrl("ldap.forumsys.com");
+       loginVM.setServerUrl("ldap://localhost");
 
        boolean isCheckedLdapLogin = loginVM.getIsAuthenticationServerLogin() != null
            && loginVM.getIsAuthenticationServerLogin() == true ? true : false;
@@ -65,8 +63,7 @@ public class UserJWTController {
            }
 
            username = userAuthorized.getLogin();
-           //password = ldapServer.getPasswordUserDefault();
-           password = "abc@123";
+           password = authenticationService.getPasswordUserDefault(loginVM.getServerUrl());
        }
 
         UsernamePasswordAuthenticationToken authenticationToken =

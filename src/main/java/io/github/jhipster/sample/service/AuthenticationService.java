@@ -1,6 +1,8 @@
 package io.github.jhipster.sample.service;
 
+import com.google.common.base.Strings;
 import io.github.jhipster.sample.domain.User;
+import io.github.jhipster.sample.domain.User_;
 import io.github.jhipster.sample.service.dto.AuthenticationServerDTO;
 import io.github.jhipster.sample.service.dto.LdapServers;
 import io.github.jhipster.sample.service.dto.UserDTO;
@@ -42,28 +44,29 @@ public class AuthenticationService {
             return null;
         }
 
-        // Check user email ldap existing then authorized
-//        userEmailLdap = userAttributes.get(User_.email.getName());
-//        if (Strings.isNullOrEmpty(userEmailLdap)) {
-//            log.error("User login don't have an email or email invalid ", userEmailLdap);
-//            return null;
-//        }
-//
-//        Optional<User> userExisting = userService.findByEmail(userEmailLdap);
-//        if (userExisting.isPresent())
-//            return userExisting.get();
-        Optional<User> userExisting = userService.findOneByLogin(username);
+//         Check user email ldap existing then authorized
+        userEmailLdap = userAttributes.get(User_.email.getName());
+        if (Strings.isNullOrEmpty(userEmailLdap)) {
+            log.error("User login don't have an email or email invalid ", userEmailLdap);
+            return null;
+        }
 
-        if(userExisting.isPresent())
+        Optional<User> userExisting = userService.findOneByEmail(userEmailLdap);
+        if (userExisting.isPresent())
             return userExisting.get();
+
+        //Optional<User> userExisting = userService.findOneByLogin(username);
+//        if(userExisting.isPresent())
+//            return userExisting.get();
 
         // Create new user ldap with default password, don't store origin password
         AuthenticationServerDTO authenticationServerDTO = ldapProvider.getAuthenticationServer(ldapServer.getUrl());
-//        User userCreated = userService.createNewAuthenticatedUser(authenticationServerDTO, userAttributes, ldapServer.getPasswordUserDefault());
-        UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(username);
-        userDTO.setActivated(true);
-        User userCreated = userService.createUser(userDTO);
+        User userCreated = userService.createNewAuthenticatedUser(authenticationServerDTO, userAttributes, ldapServer.getPasswordUserDefault());
         return userCreated;
+    }
+
+    public String getPasswordUserDefault(String serverUrl){
+        LdapServers.Server ldapServer = ldapProvider.getServerByUrl(serverUrl);
+        return ldapServer.getPasswordUserDefault();
     }
 }

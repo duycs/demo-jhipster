@@ -15,10 +15,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Hashtable;
 
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
@@ -62,6 +68,53 @@ public class JhipsterSampleApplicationApp {
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);
+        //ldapTest();
+    }
+
+    private static void ldapTest(){
+        Hashtable<String, Object> env = new Hashtable<String, Object>();
+        String principalName = "cn=read-only-admin,dc=example,dc=com";
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.PROVIDER_URL, "ldap://ldap.forumsys.com:389");
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_PRINCIPAL, principalName);
+        env.put(Context.SECURITY_CREDENTIALS, "password");
+
+        try {
+            DirContext authContext = new InitialDirContext(env);
+            // user is authenticated
+            System.out.println("USER IS AUTHETICATED");
+
+            //
+            SearchControls searchCtls = new SearchControls();
+            // Specify the attributes to return
+            String returnedAtts[] = { "cn"};
+            searchCtls.setReturningAttributes(returnedAtts);
+            // Specify the search scope
+            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            // specify the LDAP search filter
+            String searchFilter = "(&(cn=read-only-admin))";
+            // Specify the Base for the search
+            String searchBase = "dc=example,dc=com";
+            // initialize counter to total the results
+            int totalResults = 0;
+            // Search for objects using the filter
+            NamingEnumeration<SearchResult> answer = authContext.search(searchBase, searchFilter, searchCtls);
+            // Loop through the search results
+            while (answer.hasMoreElements()) {
+                SearchResult sr = (SearchResult) answer.next();
+                totalResults++;
+            }
+            System.out.println("Total results: " + totalResults);
+            authContext.close();
+
+        } catch (AuthenticationException ex) {
+            // Authentication failed
+            System.out.println("AUTH FAILED : " + ex);
+
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static void logApplicationStartup(Environment env) {

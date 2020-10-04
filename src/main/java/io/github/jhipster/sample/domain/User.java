@@ -83,6 +83,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+//    @Column(name = "authentication_server", length = 1024)
+//    private String authenticationServer = null;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -93,6 +96,17 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    public boolean isActivated() {
+        return activated;
+    }
+
+//    public String getAuthenticationServer() {
+//        return authenticationServer;
+//    }
+//
+//    public void setAuthenticationServer(String authenticationServer) {
+//        this.authenticationServer = authenticationServer;
+//    }
 
     public Long getId() {
         return id;
@@ -198,6 +212,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

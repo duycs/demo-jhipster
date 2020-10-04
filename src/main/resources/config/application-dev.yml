@@ -67,6 +67,29 @@ server:
 
 ldap-servers-list:
   configurations:
+    - name: 'localhost'
+      enable: true
+      #if support ssl use ldaps://domain
+      url: 'ldap://localhost'
+      port: 10389
+      timeout: 60000
+      baseDn:
+        - 'ou=system'
+      userDn:
+        - 'uid'
+        - 'CN'
+      prefixMailIsUserDn: true
+      authenticationType: 'Simple'
+      emailUserMapping: 'mail'
+      firstNameUserMapping: 'displayName'
+      lastNameUserMapping: 'description'
+      passwordUserDefault: 'secret'
+      # setting master account for quick searching, if don't have will be search by sequence
+      masterUserDn: 'uid'
+      masterUserDnValue: 'admin'
+      masterUserPassword: 'secret'
+      masterBaseDn: 'ou=system'
+
     - name: 'ldap.forumsys.com'
       enable: true
       #if support ssl use ldaps://domain
@@ -83,7 +106,7 @@ ldap-servers-list:
       emailUserMapping: 'mail'
       firstNameUserMapping: 'givenName'
       lastNameUserMapping: 'description'
-      passwordUserDefault: 'secret@AKB10'
+      passwordUserDefault: 'secret'
       # setting master account for quick searching, if don't have will be search by sequence
       masterUserDn: 'CN'
       masterUserDnValue: 'read-only-admin'
