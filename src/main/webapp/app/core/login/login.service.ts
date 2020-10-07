@@ -18,4 +18,8 @@ export class LoginService {
   logout(): void {
     this.authServerProvider.logout().subscribe(null, null, () => this.accountService.authenticate(null));
   }
+
+  authenticationServer(): any[] {
+    return this.authServerProvider.authenticationServers();
+  }
 }

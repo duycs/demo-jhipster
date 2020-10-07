@@ -35,6 +35,15 @@
                     </label>
                 </div>
 
+                <div class="form-group">
+                    <div *ngIf="authenticationServers && authenticationServers.length > 0" for="serverUrl" class="form" style="margin: 10px 0px;">
+                        <select class="form-control" formControlName="serverUrl" [value]="serverUrl" [(ngModel)]="serverUrl">
+                            <option [value] = "serverUrl">Choose Server</option>
+                            <option *ngFor="let server of authenticationServers" [value]="server.url">{{server.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary" jhiTranslate="login.form.button">Sign in</button>
             </form>
 

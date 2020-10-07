@@ -10,8 +10,11 @@ import io.github.jhipster.sample.web.rest.UserJWTController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +27,14 @@ public class AuthenticationService {
     public AuthenticationService(UserService userService, LdapProvider ldapProvider) {
         this.userService = userService;
         this.ldapProvider = ldapProvider;
+    }
+
+    public List<AuthenticationServerDTO> getAuthenticationServerDTO() throws Exception {
+        List<AuthenticationServerDTO> authenticationServerDTOS = ldapProvider.getAuthenticationServers();
+        if (authenticationServerDTOS == null)
+            return new ArrayList<>();
+
+        return authenticationServerDTOS;
     }
 
     public User getUserAuthorized(String serverUrl, String username, String password) throws Exception {
@@ -39,7 +50,7 @@ public class AuthenticationService {
         // Check username unique is CN or email or...at userDnPattern setting
 
         userAttributes = ldapProvider.getUserMappingAttribute(ldapServer, username, password);
-        if(userAttributes == null) {
+        if (userAttributes == null) {
             log.error("User login don't have attribute");
             return null;
         }
@@ -65,7 +76,7 @@ public class AuthenticationService {
         return userCreated;
     }
 
-    public String getPasswordUserDefault(String serverUrl){
+    public String getPasswordUserDefault(String serverUrl) {
         LdapServers.Server ldapServer = ldapProvider.getServerByUrl(serverUrl);
         return ldapServer.getPasswordUserDefault();
     }
